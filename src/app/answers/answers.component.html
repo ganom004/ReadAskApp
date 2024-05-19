@@ -1,0 +1,53 @@
+<!-- importing the Font Awesome icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+<!-- This div contains the entire page layout -->
+<div class="container mt-2">
+  <div class="card">
+    <!-- showing thee list of tp question asked  -->
+    <h5 class="card-header card text-white bg-primary mb-3">Question# - {{ currentQuestion.text }}</h5>
+    <div class="card-body">
+      <!-- This section allows logged-in users to answer the question -->
+      <div class="form-floating" *ngIf="authService.currentLoggedInUser">
+        <span *ngIf="authService.currentLoggedInExpert">
+          <textarea class="form-control mb-1"  id="floatingTextarea2" style="height: 100px" placeholder=" Post Your Answer Here" #answer></textarea>
+          <button (click)="addAnswer(answer)" class="btn btn-primary"> Post Your Answer</button>
+          <hr />
+        </span>
+      </div>
+      <!-- This section displays the answers to the question, if any exist -->
+      <div *ngIf="answers.length > 0">
+        <h5 class="card-title mt-1">Answers</h5>
+        <ul class="list-group" *ngFor="let answer of answers">
+          <li class="list-group-item">
+            <!-- This section displays the answer's upvote/downvote buttons and count -->
+            <div class="d-flex w-100 justify-content-between">
+              <div class="d-flex flex-column align-items-center">
+                <button (click)="upvoteAnswer(answer.id)" class="btn">
+                  <i class="fas fa-arrow-up"></i> <!-- Upvote icon -->
+                </button>
+                <p class="mb-1">{{ answer.upvote }}</p> <!-- Upvote count -->
+                <button (click)="downvoteAnswer(answer.id)" class="btn">
+                  <i class="fas fa-arrow-down"></i> <!-- Downvote icon -->
+                </button>
+              </div>
+              <!-- displays the answer text and user who submitted it -->
+              <div class="answer-text">
+                <p>{{ answer.text }}</p>
+                <small class="text-muted">/ {{ answer.user.name }}</small>
+              </div>
+              <!-- This section allows the admin user to edit/delete the answer -->
+              <div class="d-flex align-items-center" *ngIf="isAdminUser">
+                <button (click)="editAnswer(answer.id, newText)" class="btn btn-secondary mx-1"> Edit </button>
+                <button (click)="deleteAnswer(answer.id)" class="btn btn-danger mx-1"> Delete</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <ul class="list-group" *ngIf="answers.length === 0">
+        <li class="list-group-item"> Question has not been answered yet. Give it a try! </li>
+      </ul>
+    </div>
+  </div>
+</div>
